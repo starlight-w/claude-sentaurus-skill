@@ -1,4 +1,5 @@
-# Sentaurus TCAD 全流程 Agent Skill
+# Sentaurus TCAD 全流程 Agent Skill 【重大更新】正在实现新用户友好型skill，请稍后再下载新版本skill
+
 
 [English README](README_EN.md) | 中文优先说明
 
