@@ -1,0 +1,37 @@
+# OS/editor
+.DS_Store
+*.swp
+*.tmp
+
+# Python/cache
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Sentaurus generated outputs and private projects
+*.tdr
+*.plt
+*.log
+*.sav
+*.grd
+*.dat
+*.cmd~
+pp*_*.cmd
+n*_des.*
+n*_msh.*
+results/
+*.job
+*.sta
+.database
+gtree.dat
+gvars.dat
+gexec.cmd
+
+# Secrets / local config
+.env
+*.key
+*.pem
+*.lic
+settings.json
+settings.local.json
+.claude.json

@@ -1,0 +1,23 @@
+{
+  "skill_name": "sentaurus-tcad",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我想从零建立一个 p-GaN HEMT 的 Sentaurus 项目，目标是先跑 IdVg 验证 Vth>1.2V，再跑 BV 到 900V。请给出完整执行计划、资料检索路线、SWB/swbpy2 项目树设计、SDE/SDevice 关键点、提交和结果记录方式。",
+      "expected_output": "应触发 sentaurus-tcad skill；输出应包含研究优先、本地例子/PDF/knowledge-rag 路由、traditional SWB、swbpy2 AddTool/AddParam/AddPath、gsub 提交、后台监控、plt/tdr 可视化与 progress/findings 记录。",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "我的 GaN HEMT BV 节点在 720V 附近 Step-size is too small，log 里 Newton 最大误差坐标在 gate edge 附近。不要盲改参数，帮我按闭环流程诊断下一步。",
+      "expected_output": "应要求先 tail log、看 BV .plt、打开对应电压 .tdr 查看 ElectricField/Avalanche/TotalCurrent，查官方例子和知识库，并提出 eAvalanche/Add2TotalDoping/网格/场板等有依据的排查路线。",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "我要做 HeavyIon SEB 阈值扫描，固定 LET=0.8 pC/um，想自动加几个 LoadVoltage 节点跑仿真并输出曲线和表格。请设计流程。",
+      "expected_output": "应强调先有 BV，LoadVoltage 相对 BV 扫描，通过 swbpy2 加实验路径，gsub 提交且最多 3 个并发，后台监控，按电流是否恢复/温升/tdr 空间分布判定，输出 png/md 并更新经验记录。",
+      "files": []
+    }
+  ]
+}
