@@ -11,11 +11,33 @@
 
 ## SVisual 打开
 
+先确认显示环境：
+
+```bash
+printf 'DISPLAY=%s\nWAYLAND_DISPLAY=%s\n' "$DISPLAY" "$WAYLAND_DISPLAY"
+which svisual
+```
+
+有 GUI/display 时：
+
 ```bash
 svisual n<N>_des.tdr n<N>_des.plt &
 ```
 
-批处理导图可用 Tcl，但需要显示环境；无显示环境时可用 Python 解析 `.plt` 后用 matplotlib 出图，并说明 `.tdr` 仍需在 GUI 中查看。
+批处理导图可用 Tcl，但仍通常需要显示环境。无显示环境时可用 Python 解析 `.plt` 后用 matplotlib 出图，但这不是 `.tdr` 空间诊断的完整替代：必须在记录中标明 `.tdr` 尚未查看，并请用户在有 GUI 的 Sentaurus Visual 中打开或提供截图后再下空间机理结论。
+
+### 无头环境降级记录
+
+```markdown
+### 可视化状态
+- `.plt` 曲线：已用 Python/表格分析，图表路径：...
+- `.tdr` 空间分布：未完成 / 用户截图已检查 / SVisual 已打开
+- 限制：当前环境无 DISPLAY，不能声称已完成空间诊断
+```
+
+### SVisual Tcl 导图占位模板
+
+不同 Sentaurus 版本和用户布局的 Tcl 命令可能不同。若要批量导图，先在 GUI 中录制或验证 Tcl，再放入项目脚本；不要在未验证的情况下声称已导出 `.tdr` 空间图。
 
 ## `.plt` 曲线检查
 

@@ -9,6 +9,19 @@
 - 常见 TCAD Python：`$STROOT/tcad/$STRELEASE/linux64/bin/python3.11`
 - 项目通常放在 `STDB` 下，例如 `$STDB/<project>`。
 
+## swbpy2 smoke test
+
+新设备首次运行前，先确认 `swbpy2` 能在 TCAD Python 中导入：
+
+```bash
+"$STROOT/tcad/$STRELEASE/linux64/bin/python3.11" - <<'PY'
+from swbpy2 import *
+print("swbpy2 import ok")
+PY
+```
+
+如果失败，先修复 Sentaurus 环境或 Python 路径；不要开始创建 SWB 项目。
+
 ## 创建 traditional 项目
 
 ```python
@@ -44,6 +57,30 @@ deck.save()
 | 运行节点 | `deck.run(expr="55 58")` 或 gsub | 运行 virtual node |
 | 共享上游 | 只有后级参数不同会共享 SDE/IdVg 节点 | 重复创建不必要结构节点 |
 
+## 节点发现
+
+不要猜节点号。创建或修改实验树后，用 `swbpy2` 列出参数和节点关系，再选择 leaf/executable node 运行。不同 Sentaurus 版本的 API 显示函数可能略有差异；原则是读取 `gtree` 中的节点、工具标签和参数值，并避开 virtual nodes。
+
+记录提交前至少写清：
+
+| 项 | 内容 |
+|---|---|
+| 项目路径 | `$STDB/<project>` |
+| 节点号 | 纯数字，例如 `63` |
+| 上游结构节点 | SDE/mesh 节点号 |
+| 工具 | IdVg / BV / HeavyIon 等 |
+| 参数值 | `tree.AllPnames()` 顺序对应的值 |
+
+## gsub 队列检查
+
+默认使用 `local:default`：
+
+```bash
+gsub -q local:default -e <node> <project>
+```
+
+新设备上队列名可能不同。首次提交前用该环境支持的队列查询命令或本地文档确认 `local:default` 是否存在；若不存在，必须让用户确认队列名，不要自动换队列。
+
 ## gsub 提交
 
 标准命令：
@@ -74,14 +111,14 @@ gsub -q local:default -e 63 $STDB/project_name
 
 ## 监控模板
 
-提交后立即运行后台等待：
+提交后立即运行后台等待。必须在项目目录中运行，或使用绝对 log 路径，避免监控到错误文件：
 
 ```bash
 until grep -qE "Good Bye|FATAL|Step-size is too small" /path/to/n<N>_des.log 2>/dev/null; do sleep 60; done
 tail -20 /path/to/n<N>_des.log
 ```
 
-不要 grep `Error`，不要 pgrep，不要持续轮询。
+不要 grep `Error`，不要 pgrep，不要持续轮询。若 log 一直没有生成，先回到 preflight 检查 PATH、license、STDB、队列和项目路径。
 
 ## GUI 刷新
 

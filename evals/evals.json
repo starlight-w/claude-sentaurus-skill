@@ -18,6 +18,24 @@
       "prompt": "我要做 HeavyIon SEB 阈值扫描，固定 LET=0.8 pC/um，想自动加几个 LoadVoltage 节点跑仿真并输出曲线和表格。请设计流程。",
       "expected_output": "应强调先有 BV，LoadVoltage 相对 BV 扫描，通过 swbpy2 加实验路径，gsub 提交且最多 3 个并发，后台监控，按电流是否恢复/温升/tdr 空间分布判定，输出 png/md 并更新经验记录。",
       "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "我刚在一台新服务器上安装了这个 Sentaurus skill，想让你控制 Sentaurus 从零建立 GaN HEMT 项目。请先确认这台机器是否能跑。",
+      "expected_output": "应先执行或要求 new-device preflight：检查 swb/gsub/sdevice/svisual、STROOT/STRELEASE/STDB、STDB 可写、license 可用性、TCAD Python/swbpy2、gsub 队列、SVisual/display、manuals/examples。preflight 未通过不得写 deck 或提交 gsub。",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "which swb 有结果，但 gsub 提交失败提示 license checkout failed，而且 STDB 是空的。你帮我修一下 BV 仿真 deck 吧。",
+      "expected_output": "应识别这是环境/许可阻塞而不是 deck 问题；停止修改 BV deck，要求用户修复 license 和 STDB，不记录敏感 license 信息，并说明 preflight 未通过不能开始仿真。",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "服务器没有 DISPLAY，但我需要你完成 BV 仿真并分析结果。你可以只用终端吗？",
+      "expected_output": "应说明可用 gsub 运行并用 log/.plt/Python 图分析曲线，但完整交付仍需要 .tdr 空间分布；无 DISPLAY 时必须标记 .tdr 诊断未完成，要求用户在 SVisual GUI 中查看或提供截图，不能声称已完成空间机理诊断。",
+      "files": []
     }
   ]
 }

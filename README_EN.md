@@ -2,15 +2,28 @@
 
 [中文 README](README.md) | English README
 
-This repository provides an **end-to-end Sentaurus TCAD simulation skill** for agent environments such as Claude Code, Claude.ai, OpenAI Codex, OpenCode, and OpenClaw.
+This skill was created and organized with the help of **Claude Code**. Its purpose is simple: make agents less careless when working with Sentaurus TCAD.
 
-It is not a replacement for Sentaurus TCAD and does not include any Synopsys proprietary files. Instead, it provides workflow instructions and safety constraints that help an AI agent run TCAD work in a more reliable, traceable, and research-grade way.
+It is built first for Claude Code's Skills mechanism. You can also use it as plain Markdown instructions or project knowledge in Claude.ai, OpenAI Codex, OpenCode, OpenClaw, or any agent environment that can read custom instructions.
 
-The intended workflow is:
+It is not a Sentaurus installer, and it does not include Synopsys proprietary files. What it provides is a workflow and a set of guardrails so an agent can keep TCAD work traceable and reproducible.
+
+The workflow is:
 
 ```text
 Problem definition → literature and documentation search → official examples check → SWB project tree → SDE/SDevice/SVisual setup → gsub submission → monitoring → log/plt/tdr diagnosis → visualization and report → knowledge capture → next iteration
 ```
+
+## Supported agent environments
+
+| Environment | Recommended use | Notes |
+|---|---|---|
+| Claude Code | Import the `.skill` package, or place the files under `~/.claude/skills/sentaurus-tcad/` | Recommended path; references can be loaded as needed |
+| Claude.ai / Claude Desktop | Add `SKILL.md` and the relevant `references/` files as project knowledge or attachments | Useful for planning, review, and deck generation; commands still run on your Sentaurus machine |
+| OpenAI Codex / OpenCode / OpenClaw | Place the Markdown files in the corresponding agents/skills/instructions directory | These tools may not import `.skill` packages, but the workflow and guardrails still apply |
+| Other LLM agents | Read `SKILL.md` first, then load `references/*.md` when details are needed | You will need to adapt tool calls, file access, and shell permissions |
+
+For new users: **this is an operating manual for agents, not a Sentaurus installer.** You need a licensed, working Sentaurus environment before this skill can help.
 
 ## When to use this skill
 
@@ -73,6 +86,7 @@ The skill instructs the agent to follow these rules:
 claude-sentaurus-skill/
 ├── SKILL.md                         # Main skill entry point
 ├── references/
+│   ├── new-device-preflight.md        # First-run environment checks on a new machine
 │   ├── swbpy2-gsub.md                # SWB, swbpy2, gsub, GUI visibility
 │   ├── sde-mesh-patterns.md          # SDE geometry, Boolean, contacts, doping, mesh
 │   ├── sdevice-patterns.md           # SDevice Physics/Math/Solve/Plot/Save
@@ -98,6 +112,8 @@ If your agent environment supports `.skill` packages, import:
 dist/sentaurus-tcad.skill
 ```
 
+In Claude Code, after importing, you can ask: "Use the sentaurus-tcad skill to ...". If another agent platform does not support `.skill` files, use Option C.
+
 ### Option B: Manual installation for Claude Code
 
 ```bash
@@ -112,6 +128,17 @@ Restart or reload Claude Code afterwards.
 
 Place `SKILL.md` and `references/` in the skill, instruction, or knowledge directory supported by your agent platform. The important part is that the agent reads `SKILL.md` first and then loads reference files on demand.
 
+If the platform does not have a formal "skill" concept, you can still use these files as project-level system instructions or knowledge documents. The minimum useful set is:
+
+```text
+SKILL.md
+references/new-device-preflight.md
+references/swbpy2-gsub.md
+references/results-reporting.md
+```
+
+Add the SDE, SDevice, or GaN/SEB references when your task needs them.
+
 ## Prerequisites
 
 You need your own licensed Sentaurus TCAD installation. This repository does not include Sentaurus software, licenses, official manuals, official examples, or commercial files.
@@ -124,14 +151,25 @@ Recommended setup:
 - Access to official Applications Library and documentation.
 - Literature search tools such as Zotero, institutional access, or public databases.
 
-On a new machine, ask the agent to check:
+On a new machine, ask the agent to run a full preflight before writing decks or submitting jobs. At minimum, it should check:
 
 ```bash
 which swb gsub sdevice svisual
 printf '%s\n' "$STROOT" "$STRELEASE" "$STDB"
+test -n "$STDB" && test -d "$STDB" && test -w "$STDB"
 ```
 
+It should also confirm that the Sentaurus license is usable, TCAD Python can import `swbpy2`, the `gsub` queue exists, SVisual/display is available, and Applications Library / manuals paths are accessible. See `references/new-device-preflight.md` for the full checklist.
+
+If preflight fails, the agent should stop the simulation plan and report the blocker. It should not treat license, PATH, STDB, queue, or GUI failures as SDE/SDevice model problems.
+
 ## Example prompts
+
+### First run on a new machine
+
+```text
+Use the sentaurus-tcad skill to check whether this new server can run Sentaurus simulations. Do not write decks or submit gsub yet; run the new-device preflight first and verify PATH, STROOT/STRELEASE/STDB, license, swbpy2, gsub queue, SVisual/display, manuals/examples, and STDB write permission.
+```
 
 ### Create a p-GaN HEMT project from scratch
 
@@ -150,6 +188,17 @@ My GaN HEMT BV node hits Step-size is too small around 720 V. The Newton maximum
 ```text
 I need a HeavyIon SEB threshold scan with LET = 0.8 pC/um and several LoadVoltage nodes. Please add experiments through SWB/swbpy2, submit them with gsub, and output curves, tables, and criteria.
 ```
+
+## Quick start for new users
+
+1. Make sure you already have a licensed, working Sentaurus TCAD environment.
+2. Import `dist/sentaurus-tcad.skill` into Claude Code, or manually copy `SKILL.md` and `references/`.
+3. On the first run on a new machine, ask the agent to run preflight:
+   ```text
+   Use the sentaurus-tcad skill to check whether this machine can run Sentaurus simulations. Do not write decks or submit gsub yet.
+   ```
+4. After preflight passes, describe your device, simulation targets, and required outputs.
+5. After a run finishes, ask for the SWB node number, log status, `.plt` curves, `.tdr` spatial diagnosis, and a persistent report.
 
 ## What problems does it prevent?
 

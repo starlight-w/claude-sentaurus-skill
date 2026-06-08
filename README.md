@@ -1,15 +1,27 @@
-# Sentaurus TCAD 全流程 Agent Skill 【重大更新】正在实现新用户友好型skill，请稍后再下载新版本skill
-
+# Sentaurus TCAD 全流程 Agent Skill
 
 [English README](README_EN.md) | 中文优先说明
 
-这是一个面向 Claude Code、Claude.ai、OpenAI Codex、OpenCode、OpenClaw 等 Agent 环境的 **Sentaurus TCAD 仿真全流程 Skill**。它不是 Sentaurus 的替代品，也不包含 Synopsys 专有文件；它是一套让 AI Agent 更可靠地完成 TCAD 仿真的工作流说明和操作约束。
+这个 skill 是用 **Claude Code** 辅助整理出来的，目标很朴素：让 Agent 做 Sentaurus TCAD 仿真时少走弯路。它优先适配 Claude Code 的 Skills 机制，也可以当作普通 Markdown 指令或知识文件，放进 Claude.ai、OpenAI Codex、OpenCode、OpenClaw 等支持自定义指令的 Agent 环境。
 
-它的核心目标是让 Agent 不再“凭感觉写 deck 然后直接跑”，而是按科研工程闭环执行：
+它不是 Sentaurus 安装包，也不包含 Synopsys 的专有文件。它提供的是一套工作流和安全边界，帮助 Agent 把 TCAD 仿真做得更可追踪、更容易复现。
+
+核心想法是：别让 Agent “凭感觉写 deck 然后直接跑”，而是按科研工程闭环执行：
 
 ```text
 问题定义 → 资料检索 → 官方文档/例子验证 → SWB 项目树 → SDE/SDevice/SVisual → gsub 提交 → 监控 → log/plt/tdr 诊断 → 可视化报告 → 经验沉淀 → 下一轮迭代
 ```
+
+## 适用的 Agent 环境
+
+| 环境 | 推荐用法 | 说明 |
+|---|---|---|
+| Claude Code | 直接导入 `.skill` 包，或放入 `~/.claude/skills/sentaurus-tcad/` | 推荐方式；触发后可按 references 分层读取 |
+| Claude.ai / Claude 桌面端 | 把 `SKILL.md` 和需要的 `references/` 作为项目知识或附件 | 适合规划、审查、生成 deck；命令仍要在你的 Sentaurus 机器上执行 |
+| OpenAI Codex / OpenCode / OpenClaw 等 | 作为 Markdown 指令集放入对应 agents/skills/instructions 目录 | 不一定识别 `.skill` 包，但可以复用流程和红线 |
+| 其他 LLM Agent | 先读 `SKILL.md`，需要细节时再读 `references/*.md` | 需要你自行适配工具调用、文件读写和 shell 权限 |
+
+新用户只要先记住一件事：**这是给 Agent 的操作手册，不是 Sentaurus 安装包。** 你需要已经有可用的 Sentaurus 环境和合法 license。
 
 ## 适用场景
 
@@ -72,6 +84,7 @@
 claude-sentaurus-skill/
 ├── SKILL.md                         # Skill 主入口：触发说明、流程、红线
 ├── references/
+│   ├── new-device-preflight.md        # 新设备首次运行环境体检
 │   ├── swbpy2-gsub.md                # SWB、swbpy2、gsub、GUI 可见性
 │   ├── sde-mesh-patterns.md          # SDE 几何、Boolean、接触、掺杂、网格
 │   ├── sdevice-patterns.md           # SDevice Physics/Math/Solve/Plot/Save
@@ -97,7 +110,7 @@ claude-sentaurus-skill/
 dist/sentaurus-tcad.skill
 ```
 
-具体导入方式取决于你的 Agent 平台。
+在 Claude Code 中，导入后你可以直接说“用 sentaurus-tcad skill 帮我……”。其他 Agent 平台若不识别 `.skill` 文件，请使用方式 C。
 
 ### 方式 B：手动安装到 Claude Code
 
@@ -113,6 +126,17 @@ cp -r references ~/.claude/skills/sentaurus-tcad/
 
 把 `SKILL.md` 和 `references/` 放到你的 Agent 支持的 skill / instruction / knowledge 目录中。关键是让 Agent 在执行 Sentaurus 相关任务时先读取 `SKILL.md`，再按需读取 `references/`。
 
+如果平台没有“skill”概念，也可以把它当作项目级系统提示或知识库文档使用。最小集合是：
+
+```text
+SKILL.md
+references/new-device-preflight.md
+references/swbpy2-gsub.md
+references/results-reporting.md
+```
+
+涉及 SDE、SDevice 或 GaN/SEB 时，再加入对应 reference。
+
 ## 使用前准备
 
 你需要自己安装并授权使用 Synopsys Sentaurus TCAD。本仓库不包含任何 Sentaurus 软件、许可证、官方 PDF、官方示例或商业文件。
@@ -125,14 +149,25 @@ cp -r references ~/.claude/skills/sentaurus-tcad/
 - 官方 Applications Library 和 PDF 文档路径。
 - 文献检索工具，例如 Zotero、机构订阅、机构网络或公开数据库。
 
-在新机器上，先让 Agent 确认：
+在新机器上，先让 Agent 执行完整 preflight，而不是直接写 deck 或提交仿真。最低限度需要确认：
 
 ```bash
 which swb gsub sdevice svisual
 printf '%s\n' "$STROOT" "$STRELEASE" "$STDB"
+test -n "$STDB" && test -d "$STDB" && test -w "$STDB"
 ```
 
+还应确认 Sentaurus license 可用、TCAD Python 能导入 `swbpy2`、`gsub` 队列存在、SVisual/display 可用，以及 Applications Library / manuals 路径可访问。详细清单见 `references/new-device-preflight.md`。
+
+如果 preflight 未通过，Agent 应停止仿真计划并报告阻塞项，不应把 license、PATH、STDB、队列或 GUI 问题当成 SDE/SDevice 模型问题修。
+
 ## 典型提示词
+
+### 新机器首次运行
+
+```text
+请用 sentaurus-tcad skill 先检查这台新服务器是否能运行 Sentaurus 仿真。不要直接写 deck 或提交 gsub；请先做 new-device preflight，确认 PATH、STROOT/STRELEASE/STDB、license、swbpy2、gsub 队列、SVisual/display、manuals/examples 和 STDB 写权限。
+```
 
 ### 从零建立 p-GaN HEMT 项目
 
@@ -151,6 +186,17 @@ printf '%s\n' "$STROOT" "$STRELEASE" "$STDB"
 ```text
 我要做 HeavyIon SEB 阈值扫描，固定 LET=0.8 pC/um，扫描多个 LoadVoltage 节点。请用 SWB/swbpy2 添加实验，gsub 提交，并输出曲线、表格和判据说明。
 ```
+
+## 新用户快速开始
+
+1. 确认你已经有合法可用的 Sentaurus TCAD 环境。
+2. 在 Claude Code 中导入 `dist/sentaurus-tcad.skill`，或手动复制 `SKILL.md` 与 `references/`。
+3. 第一次在新机器上使用时，先让 Agent 做 preflight：
+   ```text
+   请用 sentaurus-tcad skill 先检查这台机器是否能运行 Sentaurus 仿真，不要直接写 deck 或提交 gsub。
+   ```
+4. preflight 通过后，再描述你的器件、仿真目标和输出要求。
+5. 仿真结束后，要求 Agent 给出 SWB 节点号、log 状态、`.plt` 曲线、`.tdr` 空间诊断和持久化报告。
 
 ## 这个 skill 解决了哪些常见问题？
 

@@ -21,7 +21,8 @@ description: End-to-end Sentaurus TCAD simulation workflow skill. Use this whene
    - PDF manuals: `$STROOT/tcad/$STRELEASE/manuals/olh_sentaurus/pdf/`
    - Applications Library: `$STROOT/tcad/$STRELEASE/Applications_Library/`
 3. 对外分享或在新机器上运行时，不要硬编码上述路径；先让用户提供 Sentaurus 安装目录和 STDB，或用 shell 检查 `swb/gsub/sdevice/svisual` 是否在 PATH 中。
-4. 大任务必须先建立持久化计划文件：`task_plan.md`、`findings.md`、`progress.md`。复杂仿真没有计划文件就不要开始。
+4. **新设备首次运行必须先做 preflight**：确认 PATH、`STROOT/STRELEASE/STDB`、STDB 可写、license 可用、TCAD Python/`swbpy2`、`gsub` 队列、SVisual/display、manuals/examples。preflight 未通过时，不要写 deck、不要提交仿真、不要把环境错误当成物理模型问题修。详见 `references/new-device-preflight.md`。
+5. 大任务必须先建立持久化计划文件：`task_plan.md`、`findings.md`、`progress.md`。复杂仿真没有计划文件就不要开始；不要覆盖已有无关计划文件。
 
 ## 1. 不可违反的仿真执行规则
 
@@ -193,6 +194,7 @@ tdr 结论：____
 
 | 需要 | 读取 |
 |---|---|
+| 新设备首次运行、环境变量、license、STDB、swbpy2、队列、SVisual/display | `references/new-device-preflight.md` |
 | SWB 项目、参数扫描、gsub、GUI 可见性 | `references/swbpy2-gsub.md` |
 | SDE、Boolean、接触、网格 | `references/sde-mesh-patterns.md` |
 | SDevice Physics/Math/Solve/Plot/Save | `references/sdevice-patterns.md` |
