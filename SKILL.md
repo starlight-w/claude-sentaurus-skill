@@ -142,7 +142,7 @@ deck.save()
 1. 用 `ps aux | grep sdevice | grep -v grep` 检查并发。
 2. 用 `gsub -q local:default -e <node> <project>` 提交。
 3. 立即设置后台等待。
-4. 若需要队列追踪，可记录节点号、参数、开始时间、预期输出。
+4. 若需要队列追踪，在本工作区使用 `scripts/sentaurus/sim_queue.py add <node> <project> "description"`；状态文件默认写到 `claude_tmp/sentaurus/sim_queue.json`。队列工具只做辅助记录，不替代 SWB/gsub 状态管理。
 
 ### G. 分层诊断
 

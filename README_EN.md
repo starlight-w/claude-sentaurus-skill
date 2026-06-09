@@ -2,6 +2,8 @@
 
 [中文 README](README.md) | English README
 
+Current version: `v0.2.1`
+
 This skill was created and organized with the help of **Claude Code**. Its purpose is simple: make agents less careless when working with Sentaurus TCAD.
 
 It is built first for Claude Code's Skills mechanism. You can also use it as plain Markdown instructions or project knowledge in Claude.ai, OpenAI Codex, OpenCode, OpenClaw, or any agent environment that can read custom instructions.
@@ -101,6 +103,14 @@ claude-sentaurus-skill/
 ├── SECURITY.md                       # Security notes
 └── LICENSE                           # MIT License
 ```
+
+## Changelog
+
+### v0.2.1
+
+- Added simulation queue tracking guidance to `SKILL.md` and `references/swbpy2-gsub.md`.
+- Clarified that the queue script is only an auxiliary log and does not replace SWB/gsub state management.
+- Recommended workspace script path: `scripts/sentaurus/sim_queue.py`; recommended state file: `claude_tmp/sentaurus/sim_queue.json`.
 
 ## Installation
 

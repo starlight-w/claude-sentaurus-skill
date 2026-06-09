@@ -96,6 +96,22 @@ gsub -q local:default -e 63 $STDB/project_name
 - 多节点：`gsub -q local:default -e "55 58 60" .`
 - 需要详细调试时：`gsub -verbose -q local:default -e 63 .`
 
+## 队列追踪辅助工具
+
+在当前工作区可用轻量队列记录脚本：
+
+```bash
+python3 scripts/sentaurus/sim_queue.py add <node> <project> "description"
+python3 scripts/sentaurus/sim_queue.py done <node> "result"
+python3 scripts/sentaurus/sim_queue.py fail <node> "reason"
+python3 scripts/sentaurus/sim_queue.py status
+```
+
+规则：
+- 该脚本只记录提交/完成/失败，状态默认写入 `claude_tmp/sentaurus/sim_queue.json`。
+- 它不替代 SWB `.sta/.job` 状态，也不替代 `gsub`。
+- 提交 `gsub` 后可立即 `add`；后台等待看到 `Good Bye` 后 `done`，看到 `FATAL` 或 `Step-size is too small` 后按实际情况 `fail` 或记录为需诊断。
+
 ## 为什么禁止直接 sdevice
 
 | 项目 | gsub | 直接 sdevice |

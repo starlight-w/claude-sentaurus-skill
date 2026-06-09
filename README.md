@@ -2,6 +2,8 @@
 
 [English README](README_EN.md) | 中文优先说明
 
+当前版本：`v0.2.1`
+
 这个 skill 是用 **Claude Code** 辅助整理出来的，目标很朴素：让 Agent 做 Sentaurus TCAD 仿真时少走弯路。它优先适配 Claude Code 的 Skills 机制，也可以当作普通 Markdown 指令或知识文件，放进 Claude.ai、OpenAI Codex、OpenCode、OpenClaw 等支持自定义指令的 Agent 环境。
 
 它不是 Sentaurus 安装包，也不包含 Synopsys 的专有文件。它提供的是一套工作流和安全边界，帮助 Agent 把 TCAD 仿真做得更可追踪、更容易复现。
@@ -99,6 +101,14 @@ claude-sentaurus-skill/
 ├── SECURITY.md                       # 安全说明
 └── LICENSE                           # MIT License
 ```
+
+## 版本记录
+
+### v0.2.1
+
+- 在 `SKILL.md` 和 `references/swbpy2-gsub.md` 中补充仿真队列追踪说明。
+- 明确队列脚本只做辅助记录，不替代 SWB/gsub 状态管理。
+- 建议工作区脚本路径为 `scripts/sentaurus/sim_queue.py`，状态文件放 `claude_tmp/sentaurus/sim_queue.json`。
 
 ## 安装方式
 

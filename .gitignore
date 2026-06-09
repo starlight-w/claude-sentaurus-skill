@@ -3,6 +3,9 @@
 *.swp
 *.tmp
 
+# Claude planning files
+plans/
+
 # Python/cache
 __pycache__/
 *.pyc
