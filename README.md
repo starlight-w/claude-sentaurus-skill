@@ -112,6 +112,8 @@ claude-sentaurus-skill/
 
 ## 安装方式
 
+### 方式auto：向claude发指令如：在网上找一下claude-sentaurus-skill，分析全仓库并完善安装。
+
 ### 方式 A：Claude Code / 支持 `.skill` 包的环境
 
 如果你的环境支持导入 `.skill` 文件，可直接使用：
