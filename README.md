@@ -9,6 +9,9 @@
 它不是 Sentaurus 安装包，也不包含 Synopsys 的专有文件。它提供的是一套工作流和安全边界，帮助 Agent 把 TCAD 仿真做得更可追踪、更容易复现。
 
 核心想法是：别让 Agent “凭感觉写 deck 然后直接跑”，而是按科研工程闭环执行：
+一些小tip：
+   1.我觉得安装可以向claude发指令如：在网上找一下claude-sentaurus-skill，分析全仓库并完善安装。
+   2.这个skill主要是让ai能开始仿真。还包括一些GaN的知识。skill只是工作流的一部分。用skill前得先让ai学习好你的器件特性等知识。
 
 ```text
 问题定义 → 资料检索 → 官方文档/例子验证 → SWB 项目树 → SDE/SDevice/SVisual → gsub 提交 → 监控 → log/plt/tdr 诊断 → 可视化报告 → 经验沉淀 → 下一轮迭代
@@ -112,7 +115,6 @@ claude-sentaurus-skill/
 
 ## 安装方式
 
-### 方式auto：向claude发指令如：在网上找一下claude-sentaurus-skill，分析全仓库并完善安装。
 
 ### 方式 A：Claude Code / 支持 `.skill` 包的环境
 
