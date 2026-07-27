@@ -1,6 +1,6 @@
 # Sentaurus TCAD 全流程 Agent Skill
 
-[English README](README_EN.md) | 中文优先说明
+[English README](README_EN.md) | 注意此skill需要在sentaurus软件安装的系统下部署claude，直接读取本地手册和例子库程序。
 
 当前版本：`v0.2.1`
 
