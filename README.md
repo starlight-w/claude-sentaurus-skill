@@ -1,6 +1,7 @@
 # Sentaurus TCAD 全流程 Agent Skill
 
-[English README](README_EN.md) | 注意此skill需要在sentaurus软件安装的系统下部署claude，直接读取本地手册和例子库程序。目前在找功率器件设计或可靠性分析失效分析岗位27届校招。
+[English README](README_EN.md) | 注意此skill需要在sentaurus软件安装的系统下部署claude，直接读取本地手册和例子库程序。
+题外话：作者目前在找功率器件设计或可靠性分析失效分析岗位27届校招。
 
 当前版本：`v0.2.1`
 
